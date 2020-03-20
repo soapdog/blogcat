@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "blogfox",
+  "name": "blogcat",
   "description": "An add-on to make blogging a first-class feature of Firefox",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "icons": {
     "64": "assets/icons/icon.png"
   },
