@@ -1,0 +1,53 @@
+{
+  "manifest_version": 2,
+  "name": "blogfox",
+  "description": "An add-on to make blogging a first-class feature of Firefox",
+  "version": "0.0.1",
+  "icons": {
+    "64": "assets/icons/icon.png"
+  },
+  "background": {
+    "scripts": [
+      "background/background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.mozilla.org/*"
+      ],
+      "js": [
+        "contentScript/content_script.js"
+      ]
+    }
+  ],
+  "browser_action": {
+    "default_icon": {
+      "64": "assets/icons/icon.png"
+    },
+    "default_popup": "browserAction/index.html",
+    "default_title": "blogfox"
+  },
+  "page_action": {
+    "default_icon": {
+      "64": "assets/icons/icon.png"
+    },
+    "default_popup": "pageAction/index.html",
+    "default_title": "blogfox"
+  },
+  "options_ui": {
+    "page": "options/index.html"
+  },
+  "permissions": [
+    "<all_urls>",
+    "notifications",
+    "nativeMessaging",
+    "tabs",
+    "activeTab",
+    "storage",
+    "unlimitedStorage",
+    "clipboardWrite",
+    "clipboardRead",
+    "contextMenus"
+  ]
+}
