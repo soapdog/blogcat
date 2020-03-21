@@ -1,9 +1,10 @@
 /**
- * OPML 1.0 implementation
+ * OPML 2.0 implementation
  * 
- * Implementation of version 1.0 as found in:
- * http://dev.opml.org/spec1.html
+ * Implementation of version 2.0 as found in:
+ * http://dev.opml.org/spec2.html
  */
+
 
 import {
     XPathAttribute,
@@ -11,22 +12,22 @@ import {
     evaluateXPath
 } from "./xml.js"
 
-export default class OPML1 {
+export default class OPML2 {
     constructor() {
-        this.version = false;
-        this.title = false;
-        this.dateCreated = false;
-        this.dateModified = false;
-        this.ownerName = false;
-        this.ownerEmail = false;
-        this.ownerId = false;
-        this.docs = false;
-        this.expansionState = false;
-        this.vertScrollState = false;
-        this.windowTop = false;
-        this.windowLeft = false;
-        this.windowBottom = false;
-        this.windowRight = false;
+        this.version = undefined;
+        this.title = undefined;
+        this.dateCreated = undefined;
+        this.dateModified = undefined;
+        this.ownerName = undefined;
+        this.ownerEmail = undefined;
+        this.ownerId = undefined;
+        this.docs = undefined;
+        this.expansionState = undefined;
+        this.vertScrollState = undefined;
+        this.windowTop = undefined;
+        this.windowLeft = undefined;
+        this.windowBottom = undefined;
+        this.windowRight = undefined;
         this.outlines = [];
     }
 
@@ -34,6 +35,22 @@ export default class OPML1 {
         let opmlText = await (await fetch(pURL)).text();
 
         return this.parse(opmlText);
+    }
+
+    toArray() {
+        let result = new Set()
+        const getFeedsFromOutlines = (outlines) => {
+            outlines.forEach(o => {
+                if (o.outlines.length > 0) {
+                    getFeedsFromOutlines(o.outlines)
+                } else if (o.xmlUrl) {
+                    result.add(o.xmlUrl)
+                }
+            })
+        }
+
+        getFeedsFromOutlines(this.outlines)
+        return [...result]
     }
 
     parse(pText) {
@@ -46,8 +63,8 @@ export default class OPML1 {
 
         let opmlRoot = xml.getElementsByTagName("opml")[0];
 
-        if (opmlRoot.getAttribute("version") !== "1.0") {
-            throw `parsererror: wrong OPML version. Expected 1.0 and got: ${opmlRoot.getAttribute("version")}.`;
+        if (opmlRoot.getAttribute("version") !== "2.0") {
+            throw `parsererror: wrong OPML version. Expected 2.0 and got: ${opmlRoot.getAttribute("version")}.`;
         }
 
         // loading attributed from head.
@@ -88,6 +105,7 @@ export default class OPML1 {
                 r.outlines = []
             } else {
                 r.outlines = this.extractOutline(o);
+
             }
             ret.push(r)
         }

@@ -4,3 +4,10 @@ document.getElementById('debug').addEventListener("click", () => {
       });
       window.close();
 })
+
+document.getElementById('reader').addEventListener("click", () => {
+  browser.tabs.create({
+      url: "/reader/index.html"
+    });
+    window.close();
+})

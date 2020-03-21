@@ -1,18 +1,31 @@
-import OPML1 from "../models/opml1.js";
-import OPML2 from "../models/opml2.js";
-import {Feed} from "../models/feed.js";
+import OPML1 from "../shared/opml1.js"
+import OPML2 from "../shared/opml2.js"
+import { Feed } from "../shared/feed.js"
+import db from "../shared/database.js"
 
 let main = async () => {
 
-    // let subs = new OPML1()
+    let subs = new OPML1()
 
-    // await subs.loadFromURL("/subs.opml")
+    await subs.loadFromURL("/subs.opml")
 
-    // console.dir(subs)
+    let feeds = subs.toArray()
+    Promise.all(feeds.map(async ({url, folder}) => {
+        let f = new Feed(url, folder)
+        try {
+            await f.refresh()
+        } catch (err) {
+            console.log(`can't load ${url}`)
+        }
+        return f
+    })).then(arr => {
+        console.log("pronto!")
+    })
 
-    let f = new Feed()
-    await f.loadFromURL("http://andregarzia.com/feeds/all.rss.xml")
-    console.dir(f)
+
+    // let f = new Feed()
+    // await f.loadFromURL("https://andregarzia.com/feeds/all.rss.xml")
+    // console.dir(f)
 
     // let opml = new OPML2()
 
