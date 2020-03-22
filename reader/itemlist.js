@@ -29,7 +29,7 @@ export default class ItemList {
 
         return m(".container", m("ul.nav", [
             this.items.map(i => m("li.nav-item", [
-                m(m.route.Link, {href: `/item/${i.id}`}, i.title)
+                m(m.route.Link, {href: `/item/${i.feedId}/${i.id}`}, i.title)
             ]))
         ]))
     }

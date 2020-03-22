@@ -1,14 +1,9 @@
 import db from "../shared/database.js"
 import FeedList from "./feedlist.js"
 import ItemList from "./itemlist.js"
-import {FeedItem} from "../shared/feed.js"
+import ItemContent from "./itemcontent.js"
 
 export default class Reader {
-
-    oninit() {
-       
-    }
-
     view(vnode) {
         return m(".columns", [
             m(".column.bg-gray.col-3", [
@@ -18,7 +13,7 @@ export default class Reader {
                 m(ItemList)
             ]),
             m(".column", [
-                m("h1", "item content")
+                m(ItemContent)
             ])
         ])
     }
