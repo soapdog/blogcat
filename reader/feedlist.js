@@ -57,9 +57,19 @@ export default class FeedList {
 class Folder {
     oninit(vnode) {
         this.active = vnode.attrs.active
+        let currentFeed = m.route.param("feed")
+        if (currentFeed) {
+            this.active = vnode.attrs.items.some(i => i.id == Number(currentFeed))
+        }
     }
     view(vnode) {
-        const makeLink = f => m("li.nav-item", m(m.route.Link, { href: `/blog/${f.id}` }, [
+        let currentFeed = m.route.param("feed")
+
+        const makeLink = f => m("li.nav-item", m(m.route.Link, {
+            href: `/blog/${f.id}`,
+            class: currentFeed == f.id ? "text-bold" : ""
+        }, [
+            m("img", { src: f.favicon(), style: "padding-right: 5px;" }),
             m(`span`, f.title)
         ]))
 

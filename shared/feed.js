@@ -62,6 +62,11 @@ export class Feed {
         })
     }
 
+    favicon() {
+        return `https://s2.googleusercontent.com/s2/favicons?domain_url=${encodeURIComponent(this.siteUrl)}`
+
+    }
+
     save() {
         return db.feeds.put(this)
     }
