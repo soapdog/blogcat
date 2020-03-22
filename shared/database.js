@@ -9,11 +9,10 @@ db.version(1).stores({
     folders: "++id, name, parentId",
 })
 
+db.feeds.mapToClass(Feed)
+db.items.mapToClass(FeedItem)
+
 db.open()
-    .then(() => {
-        db.feeds.mapToClass(Feed)
-        db.items.mapToClass(FeedItem)
-    })
     .catch((err) => {
         console.error("Problem opening blogcat database.", err)
         throw err

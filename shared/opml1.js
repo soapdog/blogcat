@@ -41,14 +41,11 @@ export default class OPML1 {
         const getFeedsFromOutlines = (outlines, folder) => {
             outlines.forEach(o => {
                 if (o.outlines.length > 0) {
-                    if (folder === "") {
-                        folder = o.title
-                    } else {
-                        folder = `${folder}/${o.title}`
-                    }
+                    folder = o.title
+
                     getFeedsFromOutlines(o.outlines, folder)
                 } else if (o.xmlUrl) {
-                    result.add({url: o.xmlUrl, folder})
+                    result.add({ url: o.xmlUrl, folder })
                 }
             })
         }
