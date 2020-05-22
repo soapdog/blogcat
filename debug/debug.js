@@ -16,10 +16,14 @@ let main = async () => {
     Promise.allSettled(feeds.map(async ({url, folder}) => {
         try {
             let folderId = await Folder.byName(folder);
-            let feed = new Feed(url, folderId);
-            await feed.save();
-            console.log("loading", url);
-            return feed.refresh();
+            if (!await Feed.exists(url)) {
+                let feed = new Feed(url, folderId);
+                await feed.save();
+                console.log("loading", url);
+                return feed.refresh();
+            } else {
+                console.log(`feed ${url} already exists`)
+            }
         }catch(n){
             console.log("error", feed);
             console.log("error", folderId);

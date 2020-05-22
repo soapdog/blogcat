@@ -85,6 +85,17 @@ export class Feed {
     save() {
         return db.feeds.put(this);
     }
+
+    static async exists(feedUrl) {
+        try {
+            let f = await db.feeds.where("feedUrl").equals(feedUrl).count();
+            console.log("f", f);
+            return f == 1;
+        } catch(n) {
+            console.error("n", n)
+            return false;
+        }
+    }
 }
 
 export class FeedItem {
