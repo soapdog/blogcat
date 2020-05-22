@@ -1,34 +1,26 @@
-import OPML1 from "../shared/opml1.js";
-import OPML2 from "../shared/opml2.js";
-import { Feed } from "../shared/feed.js";
-import Folder from "../shared/folder.js";
-import { initialize, db } from "../shared/database.js";
+import OPML1 from "../shared/opml1.js"
+import OPML2 from "../shared/opml2.js"
+import { Feed } from "../shared/feed.js"
+import db from "../shared/database.js"
 
 let main = async () => {
 
-    await initialize();
+    let subs = new OPML1()
 
-    let subs = new OPML1();
+    await subs.loadFromURL("../subs.opml")
 
-    await subs.loadFromURL("/subs.opml");
-
-    let feeds = subs.toArray();
-    Promise.allSettled(feeds.map(async ({url, folder}) => {
+    let feeds = subs.toArray()
+    Promise.all(feeds.map(async ({url, folder}) => {
+        let f = new Feed(url, folder)
         try {
-            let folderId = await Folder.byName(folder);
-            let feed = new Feed(url, folderId);
-            await feed.save();
-            console.log("loading", url);
-            return feed.refresh();
-        }catch(n){
-            console.log("error", feed);
-            console.log("error", folderId);
-            console.error(" err", n);
-            throw n;
+            await f.refresh()
+        } catch (err) {
+            console.log(`can't load ${url}`)
         }
+        return f
     })).then(arr => {
-        console.log("pronto!");
-    }).catch(err => console.log("erro", err));
+        console.log("pronto!")
+    })
 
 
     // let f = new Feed()

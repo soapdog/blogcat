@@ -1,4 +1,4 @@
-import db from "../shared/database.js"
+import { db } from "../shared/database.js"
 
 export default class ItemContent {
     oninit(vnode) {

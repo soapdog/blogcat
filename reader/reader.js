@@ -1,7 +1,6 @@
-import db from "../shared/database.js"
-import FeedList from "./feedlist.js"
-import ItemList from "./itemlist.js"
-import ItemContent from "./itemcontent.js"
+import FeedList from "./feedlist.js";
+import ItemList from "./itemlist.js";
+import ItemContent from "./itemcontent.js";
 
 export default class Reader {
     view(vnode) {
@@ -15,6 +14,6 @@ export default class Reader {
             m(".column", [
                 m(ItemContent)
             ])
-        ])
+        ]);
     }
 }

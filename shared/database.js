@@ -1,22 +1,30 @@
-import { Feed, FeedItem } from "./feed.js"
-import Folder from "./folder.js"
+import { Feed, FeedItem } from "./feed.js";
+import Folder from "./folder.js";
 
-const db = new Dexie("blogcat")
+export let db = false;
 
-db.version(1).stores({
-    feeds: "++id, &feedUrl, title, pubDate, lastBuildDate, siteUrl, *tags, folderId",
-    items: "++id, &guid, feedId, creator, pubDate, title, *tags",
-    folders: "++id, name, parentId",
-})
+export async function initialize() {
+	db = new Dexie("blogcat"); // Dexie comes from HTML <script> tag.
 
-db.open()
-    .catch((err) => {
-        console.error("Problem opening blogcat database.", err)
-        throw err
-    })
+	db.version(1).stores({
+		feeds: "++id, &feedUrl, title, pubDate, lastBuildDate, siteUrl, *tags, folderId",
+		items: "++id, guid, feedId, creator, pubDate, title, *tags",
+		folders: "++id, &name",
+	});
 
-db.feeds.mapToClass(Feed)
-db.items.mapToClass(FeedItem)
+	try {
+		await db.open();
+		console.log("db is open");
+	} catch(err) {
+		console.error("Problem opening blogcat database.", err);
+		throw err;
+	}
 
-window.db = db
-export default db
+	db.feeds.mapToClass(Feed);
+	db.items.mapToClass(FeedItem);
+	db.folders.mapToClass(Folder);
+
+	window._db = db; // for debugging stuff in the browsr console.
+	return db;
+}
+
