@@ -4,7 +4,6 @@ export class Feed {
     constructor(feedUrl, folderId) {
         this.feedUrl = feedUrl;
         this.enabled = true;
-        this.refreshing = false;
         this.errored = false;
         this.title = feedUrl;
         this.folderId = folderId;
@@ -12,7 +11,6 @@ export class Feed {
     }
 
     refresh() {
-        this.refreshing = true;
         return new Promise((resolve, reject) => {
             let url = this.feedUrl;
             console.log(`refreshing ${url}`);
@@ -58,7 +56,6 @@ export class Feed {
                     this.title = feed.title || url;
                     this.ttl = feed.ttl || 10;
                     this.errored = false;
-                    this.refreshing = false;
 
                     db.transaction("rw", db.feeds, db.items, () => {
                         this.save().then(key => {
@@ -66,14 +63,13 @@ export class Feed {
                                 let item = new FeedItem(i, key);
                                 item.save();
                             });
-                            contentnsole.log(`${url} -> ${feed.items.length} items`);
+                            console.log(`${url} -> ${feed.items.length} items`);
                             resolve(this);
                         });
                     });
                 }
             });
             } catch(ferr) {
-                this.refreshing = false;
                 this.errored = true;
                 this.save().then(() => {
                     reject(ferr);
@@ -89,7 +85,6 @@ export class Feed {
     static async exists(feedUrl) {
         try {
             let f = await db.feeds.where("feedUrl").equals(feedUrl).count();
-            console.log("f", f);
             return f == 1;
         } catch(n) {
             console.error("n", n)

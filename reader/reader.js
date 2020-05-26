@@ -8,12 +8,10 @@ export default class Reader {
     }
     refreshFeeds() {
         this.refreshing = true;
-        console.log("hey")
         m.redraw()
     }
 
     view(vnode) {
-        console.log("ref", this.refreshing)
         return [
         m("div.content", [
             m("header.navbar.bg-primary.p-2",[

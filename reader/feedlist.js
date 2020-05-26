@@ -71,12 +71,6 @@ class Folder {
         this.items = [];
         this.folder = vnode.attrs.folder;
         let currentFeed = m.route.param("feed");
-        // if (currentFeed) {
-        //     this.active = vnode.attrs.items.some(i => i.id == Number(currentFeed));
-        // }
-        console.log(this)
-
-
     }
     view(vnode) {
         let currentFeed = m.route.param("feed");
@@ -93,7 +87,6 @@ class Folder {
         };
 
         const statusicon = f => {
-            console.log("statusicon for", f.title);
             if (f.refreshing) {
                 return m("i.fas.fa-spinner.fa-spin");
             }
@@ -129,7 +122,6 @@ class Folder {
                     this.active = !this.active;
                     this.folder.feeds().then(feeds => {
                         this.items = feeds;
-                        console.log(this.items);
                         m.redraw();
                     });
                     m.redraw();
