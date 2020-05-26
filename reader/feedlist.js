@@ -42,6 +42,8 @@ export default class FeedList {
 
     refreshFeeds() {
         console.log("refreshing all feeds...");
+        this.refreshing = true;
+        m.redraw();
 
         db.feeds.toArray().then(feeds => {
             const promises = feeds.map(async f => {
@@ -50,16 +52,16 @@ export default class FeedList {
                 let promise = await f.refresh();
                 f.refreshing = false;
             });
+            // this.refreshing = false;
+            // m.redraw();
         });
     }
 
     view(vnode) {
 
-        return [
-        m("button", { onclick: this.refreshFeeds }, "refresh"),
-
-        m("ul.nav", this.folders.map(f => m(Folder, { folder: f, active: false})))
-        ];
+        return m("div.container",[
+            m("ul.nav", this.folders.map(f => m(Folder, { folder: f, active: false})))
+            ])
     }
 }
 
@@ -106,18 +108,21 @@ class Folder {
 
         if (this.active) {
             return m("li.nav-item", [
-                m("a.text-bold", {
+                m("a", {
                     href: "#",
                     onclick: (ev) => {
                         ev.preventDefault();
                         this.active = !this.active;
                         m.redraw();
                     }
-                }, this.folder.name),
+                }, [
+                m("i.fas.fa-folder-open"),
+                m("span",{style: "padding-left: 5px;"}, this.folder.name)
+                ]),
                 m("ul.nav", this.items.map(makeLink))
                 ]);
         } else {
-            return m("li.nav-item", m("a.text-bold", {
+            return m("li.nav-item", m("a", {
                 href: "#",
                 onclick: (ev) => {
                     ev.preventDefault();
@@ -129,7 +134,10 @@ class Folder {
                     });
                     m.redraw();
                 }
-            }, this.folder.name));
+            }, [
+            m("i.fas.fa-folder"),
+            m("span",{style: "padding-left: 5px;"}, this.folder.name)
+            ]));
         }
     }
 }
