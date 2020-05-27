@@ -4,8 +4,8 @@ import { initialize, db } from "../shared/database.js";
 
 initialize().then(_db => {
 	m.route(root, "/", {
-		"/item/:feed/:item": Reader,
-		"/blog/:feed": Reader,
+		"/item/:key": Reader,
+		"/blog/:key": Reader,
 		"/": Reader
 	});
 })

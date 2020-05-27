@@ -91,6 +91,10 @@ export class Feed {
             return false;
         }
     }
+
+    static getById(id) {
+        return db.feeds.get(id);
+    }
 }
 
 export class FeedItem {
@@ -118,5 +122,9 @@ export class FeedItem {
 
     save() {
         return db.items.put(this);
+    }
+
+    static getById(id) {
+        return db.items.get(id);
     }
 }

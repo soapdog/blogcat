@@ -1,4 +1,5 @@
 import { db } from "../shared/database.js";
+import Utils from "./utils.js"
 
 export default class FeedList {
 
@@ -40,23 +41,6 @@ export default class FeedList {
         });
     }
 
-    refreshFeeds() {
-        console.log("refreshing all feeds...");
-        this.refreshing = true;
-        m.redraw();
-
-        db.feeds.toArray().then(feeds => {
-            const promises = feeds.map(async f => {
-                console.log(`refresh ${f.siteUrl}`);
-                f.refreshing = true;
-                let promise = await f.refresh();
-                f.refreshing = false;
-            });
-            // this.refreshing = false;
-            // m.redraw();
-        });
-    }
-
     view(vnode) {
 
         return m("div.container",[
@@ -70,16 +54,22 @@ class Folder {
         this.active = vnode.attrs.active;
         this.items = [];
         this.folder = vnode.attrs.folder;
-        let currentFeed = m.route.param("feed");
+        this.activeFolder = false;
+
+        Utils.folderFromRoute().then(id => {
+            this.folder.feeds().then(feeds => {
+                this.items = feeds;                
+                this.active = this.folder.id == id;
+                m.redraw();
+            })
+        })
     }
     view(vnode) {
-        let currentFeed = m.route.param("feed");
-
         const makeLink = f => {
             let icon = statusicon(f);
             return m("li.nav-item", m(m.route.Link, {
                 href: `/blog/${f.id}`,
-                class: currentFeed == f.id ? "text-bold" : ""
+                class: ""
             }, [
             m("div", {style: "padding: 5px; display: inline;"}, [icon]),
             m(`span`, f.title)

@@ -1,6 +1,8 @@
 import FeedList from "./feedlist.js";
 import ItemList from "./itemlist.js";
 import ItemContent from "./itemcontent.js";
+import Empty from "./empty.js";
+import Header from "./header.js";
 
 export default class Reader {
     constructor() {
@@ -12,36 +14,42 @@ export default class Reader {
     }
 
     view(vnode) {
-        return [
-        m("div.content", [
-            m("header.navbar.bg-primary.p-2",[
-                m("section.navbar-section", [
-                    m("a.navbar-brand.mr-2.text-light", "Blogcat"),
-                    m("a.btn.btn-link.text-secondary",{onclick: () => { this.refreshFeeds() }}, m("i.fas.fa-sync-alt", {class: `${this.refreshing ? "fa-spin" : ""}`})),
-                    m("a.btn.btn-link.text-light", m("i.fas.fa-folder")),
-                    m("a.btn.btn-link.text-secondary", m("i.fas.fa-tag")),
-                    m("a.btn.btn-link.text-secondary", m("i.fas.fa-star")),
-                    m("a.btn.btn-link.text-secondary", m("i.fas.fa-clock")),
+        let route = m.route.get();
+        if (route == "") {
+            route = "/"
+        }
+
+        let extra = []
+
+        if (route == "/") {
+            extra = [
+            m(".columns", [
+                m(".column.bg-secondary.col-3", {style: "padding: unset; height: calc(100vh - 52px); overflow-y: scroll; scrollbar-width: none"}, [
+                    m(FeedList)
                     ]),
-                m("section.navbar-section", [
-                    m("div.input-group.input-inline", [
-                        m("input.form-input[type=text][placeholder=search]"),
-                        m("button.btn.input-group-btn", "Search")
-                        ])
+                m(".column", [
+                    m(Empty, {title: "No Blog Selected", text: "Please select a blog on the left."})
                     ])
                 ])
-            ]),
-        m(".columns", [
-            m(".column.bg-secondary.col-3", {style: "padding: unset; height: 100vh; overflow-y: scroll;"}, [
-                m(FeedList)
-                ]),
-            m(".column.col-3", [
-                m(ItemList)
-                ]),
-            m(".column", [
-                m(ItemContent)
+            ];           
+        }
+
+        if (route.indexOf("/blog/") !== -1) {
+            extra = [
+                m(".columns", [
+                    m(".column.bg-secondary.col-3", {style: "padding: unset; height: calc(100vh - 52px); overflow-y: scroll; scrollbar-width: none"}, [
+                        m(FeedList)
+                    ]),
+                    m(".column.col-3", [
+                        m(ItemList)
+                    ]),
+                    m(".column", [
+                        m(Empty, {title: "No Post Selected", text: "Please select a post on the left."})
+                    ])
                 ])
-            ])
-        ];
+            ];           
+        }
+
+        return [m(Header), ...extra]
     }
 }
