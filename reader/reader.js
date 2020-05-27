@@ -24,7 +24,7 @@ export default class Reader {
         if (route == "/") {
             extra = [
             m(".columns", [
-                m(".column.bg-secondary.col-3", {style: "padding: unset; height: calc(100vh - 52px); overflow-y: scroll; scrollbar-width: none"}, [
+                m(".column.bg-secondary.col-2", {style: "padding: unset; height: calc(100vh - 52px); overflow-y: scroll; scrollbar-width: none"}, [
                     m(FeedList)
                     ]),
                 m(".column", [
@@ -37,7 +37,7 @@ export default class Reader {
         if (route.indexOf("/blog/") !== -1) {
             extra = [
                 m(".columns", [
-                    m(".column.bg-secondary.col-3", {style: "padding: unset; height: calc(100vh - 52px); overflow-y: scroll; scrollbar-width: none"}, [
+                    m(".column.bg-secondary.col-2", {style: "padding: unset; height: calc(100vh - 52px); overflow-y: scroll; scrollbar-width: none"}, [
                         m(FeedList)
                     ]),
                     m(".column.col-3", [
@@ -45,6 +45,22 @@ export default class Reader {
                     ]),
                     m(".column", [
                         m(Empty, {title: "No Post Selected", text: "Please select a post on the left."})
+                    ])
+                ])
+            ];           
+        }
+
+        if (route.indexOf("/item/") !== -1) {
+            extra = [
+                m(".columns", [
+                    m(".column.bg-secondary.col-2", {style: "padding: unset; height: calc(100vh - 52px); overflow-y: scroll; scrollbar-width: none"}, [
+                        m(FeedList)
+                    ]),
+                    m(".column.col-3", [
+                        m(ItemList)
+                    ]),
+                    m(".column", [
+                        m(ItemContent)
                     ])
                 ])
             ];           

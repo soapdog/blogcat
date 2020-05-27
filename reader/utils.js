@@ -56,4 +56,15 @@ export default class Utils {
         })
 	}
 
+	static async itemFromRoute() {
+		let route = m.route.get();
+
+		if (route.indexOf("/item/") !== -1) {
+			let id = Number(m.route.param("key"));
+			return id || false;
+		}
+
+		return false;
+	}
+
 }

@@ -31,7 +31,7 @@ export default class ItemList {
 
     view(vnode) {
         return m(".container", {style: "height: calc(100vh - 52px); overflow-y: scroll; scrollbar-width: none"},[
-            this.items.map(i => m("div.tile", [
+            this.items.map(i => m("div.tile",{onclick: () => {m.route.set("/item/:id", {id: i.id})}}, [
                 m("div.tile-content", [
                     m("div.tile-title.h5", i.title),
                     m("div.title-subtitle", i.pubDate.toLocaleDateString()),
