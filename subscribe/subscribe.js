@@ -1,3 +1,5 @@
+import { initialize } from "../shared/database.js";
+
 import blogcat from "../shared/blogcat.js"
 
 const subscribeView = () => {
@@ -57,6 +59,7 @@ const subscribeView = () => {
         blogcat.subscribe(selectedFeed)
             .then(feed => {
                 console.log("saved feed", feed)
+                window.close()
             })
             .catch(error => console.error("err", error))
     }
@@ -111,4 +114,6 @@ const subscribeView = () => {
     }
 }
 
-m.mount(document.body, subscribeView)
+initialize().then(_db => {
+    m.mount(document.body, subscribeView)
+})

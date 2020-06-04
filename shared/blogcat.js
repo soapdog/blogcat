@@ -4,7 +4,7 @@ import { Feed } from "./feed.js";
 const blogcat = {
     subscribe: async feedUrl => {
         if (!await Feed.exists(feedUrl)) {
-            let feed = new Feed(url)
+            let feed = new Feed(feedUrl)
             await feed.save()
             return feed
         }

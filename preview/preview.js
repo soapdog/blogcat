@@ -1,3 +1,4 @@
+import { initialize } from "../shared/database.js"
 import blogcat from "../shared/blogcat.js"
 
 const previewView = () => {
@@ -27,9 +28,13 @@ const previewView = () => {
     }
 
     const subscribe = ev => {
+        ev.stopPropagation()
+        ev.preventDefault()
+
         blogcat.subscribe(url)
             .then(f => {
                 console.log("saved feed", f)
+                window.close()
             })
             .catch(error => console.error("err", error))
     }
@@ -41,29 +46,41 @@ const previewView = () => {
                     const FeedItem = (item) => {
                         let date = new Date(item.pubDate)
                         return [
-                            m("a", {href: item.link, target: "_blank"}, m("h3", item.title)),
+                            m("a", { href: item.link, target: "_blank" }, m("h3", item.title)),
                             m("span.label", date.toLocaleString()),
                             m("p.text-justify", item.contentSnippet.slice(0, 300) + "...")
                         ]
                     }
-                    return m(".container", {style: "width: 60%; margin: auto;"}, [
-                        m("h1", `Preview of '${feed.title}' feed`),
-                        m("p", `Showing the first five posts from ${url}.`),
-                        feed.description ? m("blockquote.blockquote", feed.description) : "",
-                        feed.items.slice(0, 5).map(i => FeedItem(i)),
-                        m(".divider.text-center[data-content='SUBSCRIBE']"),
-                        m("form.m-2", [
-                            m(".form-group", [
-                                m("label.form-label[for=title-input]", "Title"),
-                                m("input.form-input[type=text][id=title-input]", { value: feed.title })
-                            ]),
-                            m(".form-group", [
-                                m("label.form-label", "Feed"),
-                                m("label.form-radio", [m("input[type=radio]", { name: "feed", value: url, checked: true }), m("i.form-icon"), m("span", url)]),
-                            ]),
-                            m("button.btn.btn-primary", { onclick: subscribe }, "Subscribe")
-                        ])
-                    ])
+                    return m(".container",
+                        m(".columns",
+                            m(".column.col-6.col-mx-auto",
+                                m(".panel", {style: "height: 90vh; margin-top: 5vh"}, [
+                                    m(".panel-header", [
+                                        m("h4.panel-title", `Preview of '${feed.title}' feed`),
+                                        m("p", `Showing the first five posts from ${url}.`),
+                                        feed.description ? m("blockquote.blockquote", feed.description) : "",
+                                    ]),
+                                    m(".panel-body", [
+                                        feed.items.slice(0, 5).map(i => FeedItem(i)),
+                                    ]),
+                                    m(".panel-footer", [
+                                        m(".divider.text-center[data-content='SUBSCRIBE']"),
+                                        m("form.m-2", [
+                                            m(".form-group", [
+                                                m("label.form-label[for=title-input]", "Title"),
+                                                m("input.form-input[type=text][id=title-input]", { value: feed.title })
+                                            ]),
+                                            m(".form-group", [
+                                                m("label.form-label", "Feed"),
+                                                m("label.form-radio", [m("input[type=radio]", { name: "feed", value: url, checked: true }), m("i.form-icon"), m("span", url)]),
+                                            ]),
+                                            m("button.btn.btn-primary", { onclick: subscribe }, "Subscribe")
+                                        ])
+                                    ])
+                                ])
+                            )
+                        ),
+                    )
                 case "error":
                     return m(".empty", { style: "height: 100vh" }, [
                         m(".empty-icon", [
@@ -84,4 +101,6 @@ const previewView = () => {
     }
 }
 
-m.mount(document.body, previewView)
+initialize().then(_db => {
+    m.mount(document.body, previewView)
+})
