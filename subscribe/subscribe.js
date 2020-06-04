@@ -63,7 +63,7 @@ const subscribeView = () => {
 
     const preview = () => {
         browser.tabs.create({
-            url: `/preview/preview.html?query=${selectedFeed}`
+            url: `/preview/index.html#${selectedFeed}`
         });
         window.close();
     }
