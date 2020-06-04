@@ -29,11 +29,13 @@
     "default_title": "blogfox"
   },
   "page_action": {
+    "browser_style": true,
+    "show_matches": ["<all_urls>"],
     "default_icon": {
       "64": "assets/icons/icon.png"
     },
-    "default_popup": "pageAction/index.html",
-    "default_title": "blogfox"
+    "default_popup": "subscribe/index.html",
+    "default_title": "Subscribe"
   },
   "options_ui": {
     "page": "options/index.html"
