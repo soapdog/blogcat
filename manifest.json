@@ -4,7 +4,7 @@
   "description": "An add-on to make blogging a first-class feature of Firefox",
   "version": "1.0.0",
   "icons": {
-    "64": "assets/icons/icon.png"
+    "512": "assets/icons/cat_color.svg"
   },
   "background": {
     "scripts": [
@@ -23,7 +23,7 @@
   ],
   "browser_action": {
     "default_icon": {
-      "64": "assets/icons/icon.png"
+      "512": "assets/icons/cat_color.svg"
     },
     "default_popup": "browserAction/index.html",
     "default_title": "blogfox"
@@ -32,7 +32,7 @@
     "browser_style": true,
     "show_matches": ["<all_urls>"],
     "default_icon": {
-      "64": "assets/icons/icon.png"
+      "512": "assets/icons/cat_color.svg"
     },
     "default_popup": "subscribe/index.html",
     "default_title": "Subscribe"
