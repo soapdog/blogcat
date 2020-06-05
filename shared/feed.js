@@ -114,7 +114,7 @@ export class FeedItem {
         this.contentSnippet = pItem.contentSnippet || "";
         this.creator = pItem.creator || "";
         this.guid = pItem.guid;
-        this.read = false;
+        this.read = 0;
         let isoDate = new Date(pItem.isoDate) || false;
         if (isoDate && !isNaN(isoDate)) {
             this.isoDate = isoDate;

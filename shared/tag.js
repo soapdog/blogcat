@@ -1,6 +1,6 @@
 import { db } from "./database.js";
 
-class Folder {
+class Tag {
 	constructor(name, description) {
 		this.name = name;
 		this.description = description;
@@ -24,16 +24,12 @@ class Folder {
 			}
 		} catch(n) {
 			console.log("no folder", name);
-			const f = new Folder(name, description);
+			const f = new Tag(name, description);
 			await f.save();
-			console.log(`created folder ${f.name}`, f.id);
+			console.log(`created tag ${f.name}`, f.id);
 			return f.id;
 		}
 	}
- 
-	feeds() {
-		return db.feeds.where("folderId").equals(this.id).toArray();
-	}
 }
 
-export default Folder;
+export default Tag;

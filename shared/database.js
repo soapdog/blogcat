@@ -1,5 +1,5 @@
 import { Feed, FeedItem } from "./feed.js";
-import Folder from "./folder.js";
+import Tag from "./tag.js";
 
 export let db = false;
 
@@ -7,9 +7,9 @@ export async function initialize() {
 	db = new Dexie("blogcat"); // Dexie comes from HTML <script> tag.
 
 	db.version(1).stores({
-		feeds: "++id, &feedUrl, title, pubDate, lastBuildDate, siteUrl, *tags, folderId",
-		items: "++id, guid, feedId, creator, pubDate, title, *tags",
-		folders: "++id, &name",
+		feeds: "++id, &feedUrl, title, pubDate, lastBuildDate, siteUrl, *tags",
+		items: "++id, guid, feedId, read, creator, pubDate, title, *tags",
+		tags: "++id, &name",
 	});
 
 	try {
@@ -22,9 +22,8 @@ export async function initialize() {
 
 	db.feeds.mapToClass(Feed);
 	db.items.mapToClass(FeedItem);
-	db.folders.mapToClass(Folder);
+	db.tags.mapToClass(Tag);
 
-	window._db = db; // for debugging stuff in the browsr console.
 	return db;
 }
 

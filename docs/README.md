@@ -9,8 +9,6 @@ Blogcat uses some third-party resources which are included in the `vendor/` fold
 * [Dexie](http://dexie.org) version 2.0.4
 * [Mithril](http://mithril.js.org) version 2.0.4 (a coincidence with the Dexie version, what are the odds...)
 * [Fontawesome](http://fontawesome.com) version 5.13.0 
-* [Loadash](http://lodash.com) version 4.17.15
-* [RSS-Parser](https://github.com/rbren/rss-parser) version 3.8.0
 
 # Icons
 
