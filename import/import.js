@@ -11,31 +11,33 @@ const vImport = () => {
     let error = false
 
 
-    const subscribe = ev => {
+    const importFeeds = ev => {
         ev.stopPropagation()
         ev.preventDefault()
 
-        blogcat.subscribe(url)
-            .then(f => {
-                console.log("saved feed", f)
-                stage = "subscribed"
-                feed = f
-                error = false
-                m.redraw()
-            })
-            .catch(err => {
-                console.log(err)
-                if (err.feed) {
-                    feed = err.feed
-                    stage = "subscribed"
+        feeds.forEach(fp => {
+            let url = fp.value.feedUrl
+            fp.value.subscribeStatus = "loading"
+            blogcat.subscribe(url)
+                .then(f => {
+                    console.log("saved feed", f)
+                    fp.value.subscribeStatus = "subscribed"
                     error = false
-                } else {
-                    stage = "error"
-                    error = err.message
-                    console.error(err)
-                }
-                m.redraw()
-            })
+                    m.redraw()
+                })
+                .catch(err => {
+                    console.log(err)
+                    if (err.feed) {
+                        fp.value.subscribeStatus = "subscribed"
+                        error = false
+                    } else {
+                        fp.value.subscribeStatus = "error"
+                        error = err.message
+                        console.error("error subscribing", err)
+                    }
+                    m.redraw()
+                })
+        })
     }
 
     const openFeed = id => {
@@ -59,6 +61,7 @@ const vImport = () => {
                         stage = "showfeeds"
                         feeds = rs.filter(f => f.status == "fulfilled").map(f => {
                             f.value.checked = false
+                            f.value.subscribeStatus = "waiting"
                             return f
                         })
                         m.redraw()
@@ -94,21 +97,32 @@ const vImport = () => {
                             ])
                         ))
                 case "showfeeds":
+                    const status = (fp) => {
+                        switch (fp.value.subscribeStatus) {
+                            case "waiting":
+                                return m(".form-group",
+                                    m("label.form-switch", [
+                                        m("input[type=checkbox]", { checked: fp.value.checked }),
+                                        m("i.form-icon"),
+                                        "Subscribe"
+                                    ])
+                                )
+                            case "loading":
+                                return m(".loading.m-2")
+                            case "subscribed":
+                                return m("i.fas.fa-check.m-2")
+                            case "error":
+                                return m("i.fas.fa-exclamation-triangle.m-2")
+
+                        }
+                    }
                     const Feed = (fp) => {
                         if (fp.status == "fulfilled") {
                             let feed = fp.value
                             return m("tr", [
                                 m("td", m("span", feed.title)),
-                                feed.description ? m("td", [m("span",feed.description) , m("a.btn.btn-link.ml-2", {href: feed.link}, "link")]) : m("td", m("a.btn.btn-link.ml-2", {href: feed.link}, "link")),
-                                m("td", [
-                                    m(".form-group",
-                                        m("label.form-switch", [
-                                            m("input[type=checkbox]", {checked: feed.checked}),
-                                            m("i.form-icon"),
-                                            "Subscribe"
-                                        ]))
-
-                                ])
+                                feed.description ? m("td", [m("span", feed.description), m("a.btn.btn-link.ml-2", { href: feed.link }, "link")]) : m("td", m("a.btn.btn-link.ml-2", { href: feed.link }, "link")),
+                                m("td", status(fp))
                             ])
                         }
                     }
@@ -126,7 +140,7 @@ const vImport = () => {
                                     m(".panel-footer", [
                                         m(".divider.text-center[data-content='IMPORT']"),
                                         m("form.m-2", [
-                                            m("button.btn.btn-primary", { onclick: subscribe }, "Import Selected"),
+                                            m("button.btn.btn-primary", { onclick: importFeeds }, "Import Selected"),
                                             m(".float-right", [
                                                 m("button.btn", { onclick: selectAll }, "Select All"),
                                                 m("button.btn.ml-2", { onclick: deselectAll }, "Deselect All"),
@@ -152,15 +166,6 @@ const vImport = () => {
                         m("p.empty-title.h5.text-center", "Fetchings feeds..."),
                         m("p.empty-title.text-center", "🕕 This will take a while... 😿")
                     ])
-                case "subscribed":
-                    return m(".empty", { style: "height: 100vh" }, [
-                        m(".empty-icon", [
-                            m("img.p-centered", { src: "/assets/icons/cat_color.svg", style: "width:96px" })
-                        ]),
-                        m("p.empty-title.h5.text-center", `You have subscribed to '${feed.title}'.`),
-                        m("button.btn.btn-primary", { onclick: () => openFeed(feed.id) }, "View feed")
-                    ])
-
             }
         }
     }
