@@ -1,4 +1,3 @@
-import { initialize, db } from "./database.js";
 import { Feed } from "./feed.js";
 
 const blogcat = {
@@ -16,6 +15,9 @@ const blogcat = {
             parser.parseURL(url, (err, feed) => {
                 if (err) {
                     reject(err)
+                }
+                if (!feed.feedUrl) {
+                    feed.feedUrl = url
                 }
                 resolve(feed)
             })

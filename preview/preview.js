@@ -12,6 +12,7 @@ const previewView = () => {
             .then(f => {
                 console.log("feed", f)
                 feed = f
+                feed.items = feed.items.slice(0, 10) // preview only the first 10 items.
                 stage = "showfeed"
                 m.redraw()
             })
@@ -48,7 +49,7 @@ const previewView = () => {
                         return [
                             m("a", { href: item.link, target: "_blank" }, m("h3", item.title)),
                             m("span.label", date.toLocaleString()),
-                            m("p.text-justify", item.contentSnippet.slice(0, 300) + "...")
+                            m("p.text-justify", item.contentSnippet.slice(0, 500) + "...")
                         ]
                     }
                     return m(".container",
@@ -57,11 +58,11 @@ const previewView = () => {
                                 m(".panel", {style: "height: 90vh; margin-top: 5vh"}, [
                                     m(".panel-header", [
                                         m("h4.panel-title", `Preview of '${feed.title}' feed`),
-                                        m("p", `Showing the first five posts from ${url}.`),
+                                        m("p", [m.trust(`Showing the first ten posts from <code>${url}</code>.`)]),
                                         feed.description ? m("blockquote.blockquote", feed.description) : "",
                                     ]),
                                     m(".panel-body", [
-                                        feed.items.slice(0, 5).map(i => FeedItem(i)),
+                                        feed.items.map(i => FeedItem(i)),
                                     ]),
                                     m(".panel-footer", [
                                         m(".divider.text-center[data-content='SUBSCRIBE']"),
