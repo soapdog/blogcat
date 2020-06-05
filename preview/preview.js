@@ -3,7 +3,7 @@ import blogcat from "../shared/blogcat.js"
 
 const previewView = () => {
     let feed = false
-    let stage = "loading" // error, showfeed
+    let stage = "loading" // error, showfeed, subscribed
     let error = false
     let url = location.hash.slice(1)
 
@@ -35,9 +35,28 @@ const previewView = () => {
         blogcat.subscribe(url)
             .then(f => {
                 console.log("saved feed", f)
-                window.close()
+                stage = "subscribed"
+                feed = f
+                error = false
+                m.redraw()
             })
-            .catch(error => console.error("err", error))
+            .catch(err => {
+                console.log(err)
+                if (err.feed) {
+                    feed = err.feed
+                    stage = "subscribed"
+                    error = false
+                } else {
+                    stage = "error"
+                    error = err.message
+                    console.error(err)
+                }
+                m.redraw()
+            })
+    }
+
+    const openFeed = id => {
+        location = `/reader/index.html#!/feed/${id}`
     }
 
     return {
@@ -55,7 +74,7 @@ const previewView = () => {
                     return m(".container",
                         m(".columns",
                             m(".column.col-6.col-mx-auto",
-                                m(".panel", {style: "height: 90vh; margin-top: 5vh"}, [
+                                m(".panel", { style: "height: 90vh; margin-top: 5vh" }, [
                                     m(".panel-header", [
                                         m("h4.panel-title", `Preview of '${feed.title}' feed`),
                                         m("p", [m.trust(`Showing the first ten posts from <code>${url}</code>.`)]),
@@ -85,7 +104,7 @@ const previewView = () => {
                 case "error":
                     return m(".empty", { style: "height: 100vh" }, [
                         m(".empty-icon", [
-                            m("img.p-centered", { src: "/assets/icons/cat_color.svg", style: "width:36px" })
+                            m("img.p-centered", { src: "/assets/icons/cat_color.svg", style: "width:96px" })
                         ]),
                         m("p.empty-title.h5.text-centered", `Error: ${error}`)
                     ])
@@ -95,6 +114,14 @@ const previewView = () => {
                             m(".loading.loading-lg")
                         ]),
                         m("p.empty-title.h5.text-center", "Loading feed...")
+                    ])
+                case "subscribed":
+                    return m(".empty", { style: "height: 100vh" }, [
+                        m(".empty-icon", [
+                            m("img.p-centered", { src: "/assets/icons/cat_color.svg", style: "width:96px" })
+                        ]),
+                        m("p.empty-title.h5.text-center", `You have subscribed to '${feed.title}'.`),
+                        m("button.btn.btn-primary", { onclick: () => openFeed(feed.id) }, "View feed")
                     ])
 
             }

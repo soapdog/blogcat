@@ -95,6 +95,16 @@ export class Feed {
     static getById(id) {
         return db.feeds.get(id);
     }
+
+    static async getByURL(url) {
+        try {
+            let f = await db.feeds.where("feedUrl").equals(url).first();
+            return f;
+        } catch(n) {
+            console.error("n", n)
+            return false;
+        }
+    }
 }
 
 export class FeedItem {
@@ -126,5 +136,13 @@ export class FeedItem {
 
     static getById(id) {
         return db.items.get(id);
+    }
+}
+
+export function FeedExistException(feed) {
+    this.feed = feed
+    this.message = "Already subscribed to feed"
+    this.toString = () => {
+        return `${this.message}: ${feed.feedUrl}`
     }
 }

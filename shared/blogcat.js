@@ -1,13 +1,17 @@
-import { Feed } from "./feed.js";
+import { Feed, FeedExistException } from "./feed.js";
 
 const blogcat = {
+    alreadySubscribed: feedUrl => {
+        return Feed.exists(feedUrl)
+    },
     subscribe: async feedUrl => {
         if (!await Feed.exists(feedUrl)) {
             let feed = new Feed(feedUrl)
             await feed.save()
             return feed
+        } else {
+            throw new FeedExistException(await Feed.getByURL(feedUrl))
         }
-        return false 
     },
     fetchFeed: url => {
         return new Promise((resolve, reject) => {
