@@ -1,5 +1,5 @@
-import {Feed, FeedItem} from "../shared/feed.js";
-import { db } from "../shared/database.js";
+import {Feed, FeedItem} from "../common/feed.js";
+import { db } from "../common/database.js";
 
 
 export default class Utils {

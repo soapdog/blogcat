@@ -1,6 +1,5 @@
-import { initialize } from "../shared/database.js";
-
-import blogcat from "../shared/blogcat.js"
+import { initialize } from "../common/database.js";
+import blogcat from "../common/blogcat.js"
 
 const subscribeView = () => {
     let rss = false
@@ -14,7 +13,7 @@ const subscribeView = () => {
     browser.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         const tab = tabs[0]
         browser.tabs.executeScript(tab.id, {
-            file: "/subscribe/findFeeds.js"
+            file: "/inject/findFeeds.js"
         })
             .then(data => {
                 const feeds = data[0]

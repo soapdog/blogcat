@@ -15,10 +15,10 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*.mozilla.org/*"
+        "*"
       ],
       "js": [
-        "contentScript/content_script.js"
+        "inject/inject.js"
       ]
     }
   ],
@@ -26,8 +26,8 @@
     "default_icon": {
       "512": "assets/icons/cat_color.svg"
     },
-    "default_popup": "browserAction/index.html",
-    "default_title": "blogfox"
+    "default_popup": "menu/index.html",
+    "default_title": "blogcat"
   },
   "page_action": {
     "browser_style": true,

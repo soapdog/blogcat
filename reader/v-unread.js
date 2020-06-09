@@ -1,4 +1,4 @@
-import blogcat from "../shared/blogcat.js"
+import blogcat from "../common/blogcat.js"
 import mNav from "./m-nav.js"
 
 const vUnread = (initialVnode) => {

@@ -1,13 +1,13 @@
-import { initialize } from "../shared/database.js"
-import blogcat from "../shared/blogcat.js"
-import OPML from "../shared/opml1.js";
-import { Feed } from "../shared/feed.js";
+import { initialize } from "../common/database.js"
+import blogcat from "../common/blogcat.js"
+import OPML from "../common/opml1.js";
+import { Feed } from "../common/feed.js";
 
 
 
 const vImport = () => {
     let feeds = []
-    let stage = "selectsource" // loadopml, showfeeds, error
+    let stage = "selectsource" // possible values: selectsource, loadopml, showfeeds, error
     let error = false
 
 

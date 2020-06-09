@@ -1,4 +1,4 @@
-import blogcat from "../shared/blogcat.js"
+import blogcat from "../common/blogcat.js"
 
 const mNav = (initialVnode) => {
     const refresh = (ev) => {
