@@ -1,9 +1,9 @@
-import blogcat from "../common/blogcat.js"
+import { Feed } from "../common/feed.js"
 
 const mNav = (initialVnode) => {
     const refresh = (ev) => {
         ev.preventDefault()
-        blogcat.refresh()
+        Feed.refreshAll()
     } 
 
     return {

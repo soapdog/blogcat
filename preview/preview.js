@@ -1,5 +1,5 @@
 import { initialize } from "../shared/database.js"
-import blogcat from "../shared/blogcat.js"
+import { Feed } from "../common/feed.js"
 
 const previewView = () => {
     let feed = false
@@ -8,7 +8,7 @@ const previewView = () => {
     let url = location.hash.slice(1)
 
     if (url) {
-        blogcat.fetchFeed(url)
+        Feed.fetchFeed(url)
             .then(f => {
                 console.log("feed", f)
                 feed = f
@@ -32,7 +32,7 @@ const previewView = () => {
         ev.stopPropagation()
         ev.preventDefault()
 
-        blogcat.subscribe(url)
+        Feed.subscribe(url)
             .then(f => {
                 console.log("saved feed", f)
                 stage = "subscribed"

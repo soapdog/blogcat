@@ -1,10 +1,10 @@
-import blogcat from "../common/blogcat.js"
+import Utils from "./utils.js"
 import mNav from "./m-nav.js"
 
 const vUnread = (initialVnode) => {
     let count = 0
 
-    blogcat.unreadCount()
+    Utils.unreadCount()
         .then(c => {
             console.log("unread count", c)
             count = c

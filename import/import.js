@@ -1,5 +1,4 @@
 import { initialize } from "../common/database.js"
-import blogcat from "../common/blogcat.js"
 import OPML from "../common/opml1.js";
 import { Feed } from "../common/feed.js";
 
@@ -18,7 +17,7 @@ const vImport = () => {
         feeds.forEach(fp => {
             let url = fp.value.feedUrl
             fp.value.subscribeStatus = "loading"
-            blogcat.subscribe(url)
+            Feed.subscribe(url)
                 .then(f => {
                     console.log("saved feed", f)
                     fp.value.subscribeStatus = "subscribed"
@@ -54,7 +53,7 @@ const vImport = () => {
             reader.onload = function (event) {
                 let opml = new OPML()
                 opml.parse(event.target.result)
-                let promises = opml.toArray().map(f => blogcat.fetchFeed(f.url))
+                let promises = opml.toArray().map(f => Feed.fetchFeed(f.url))
 
                 Promise.allSettled(promises)
                     .then(rs => {

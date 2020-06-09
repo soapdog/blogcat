@@ -1,5 +1,5 @@
 import { initialize } from "../common/database.js";
-import blogcat from "../common/blogcat.js"
+import { Feed } from "../common/feed.js"
 
 const subscribeView = () => {
     let rss = false
@@ -49,7 +49,7 @@ const subscribeView = () => {
         loadingFeed = true
         m.redraw()
 
-        blogcat.fetchFeed(url)
+        Feed.fetchFeed(url)
             .then(feed => {
                 console.log("feed", feed)
                 title = feed.title
@@ -67,7 +67,7 @@ const subscribeView = () => {
     }
 
     const subscribe = ev => {
-        blogcat.subscribe(selectedFeed)
+        Feed.subscribe(selectedFeed)
             .then(feed => {
                 console.log("saved feed", feed)
                 window.close()

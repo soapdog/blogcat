@@ -67,4 +67,12 @@ export default class Utils {
 		return false;
 	}
 
+	static unreadCount() {
+        return new Promise((resolve, reject) => {
+            db.items.where("read").equals(0).count()
+                .then(count => resolve(count))
+                .catch(err => reject(err))
+        })
+    }
+
 }
