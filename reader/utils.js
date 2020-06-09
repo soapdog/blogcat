@@ -39,22 +39,7 @@ export default class Utils {
 		return false;
 	}
 
-	static async refreshFeeds() {
-		console.log("refreshing all feeds...");
-		Utils.refreshingFeeds = true;
-		m.redraw();
-
-		let feeds = await db.feeds.toArray()
-		const promises = feeds.map(f => {
-			console.log(`refresh ${f.siteUrl}`);
-			return f.refresh();
-        });
-
-        Promise.allSettled(promises, s => {
-        	Utils.refreshingFeeds = false;
-        	m.redraw();
-        })
-	}
+	
 
 	static async itemFromRoute() {
 		let route = m.route.get();

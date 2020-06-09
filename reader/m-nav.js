@@ -1,9 +1,18 @@
-import { Feed } from "../common/feed.js"
-
 const mNav = (initialVnode) => {
+    let refreshing = false 
+
     const refresh = (ev) => {
         ev.preventDefault()
-        Feed.refreshAll()
+        console.time("refresh feeds")
+        refreshing = true
+        m.redraw()
+        let p = browser.runtime.sendMessage({ "type": "refresh-feeds" })
+
+        p.then(()=> {
+            console.timeEnd("refresh feeds")
+            refreshing = false
+            m.redraw()
+        })
     } 
 
     return {
@@ -21,7 +30,8 @@ const mNav = (initialVnode) => {
 
                 ]),
                 m("section.navbar-section",[
-                    m(m.route.Link, {class: "btn btn-link", href: "/import", onclick: refresh}, "Refresh")
+                    m(m.route.Link, {class: "btn btn-link", href: "/import", onclick: refresh}, "Refresh"),
+                    refreshing ? m(".loading.ml-2") : null
                 ])
             ])
         }

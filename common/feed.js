@@ -13,7 +13,7 @@ export class Feed {
     refresh() {
         return new Promise((resolve, reject) => {
             let url = this.feedUrl;
-            console.log(`refreshing ${url}`);
+            // console.log(`refreshing ${url}`);
             let parser = new RSSParser();
             try {
                 parser.parseURL(this.feedUrl, (err, feed) => {
@@ -32,44 +32,44 @@ export class Feed {
                         if (!isNaN(lastBuildDate)) {
                             this.lastBuildDate = lastBuildDate;
                         } else if (!isNaN(pubDate)) {
-                        this.lastBuildDate = pubDate;// hack to always have a lastBuildDate
-                    } else {
-                        // no date, then place it in the past!
-                        this.lastBuildDate = new Date('01 Jan 1970 00:00:00 GMT');
-                    }
+                            this.lastBuildDate = pubDate;// hack to always have a lastBuildDate
+                        } else {
+                            // no date, then place it in the past!
+                            this.lastBuildDate = new Date('01 Jan 1970 00:00:00 GMT');
+                        }
 
-                    if (!isNaN(pubDate)) {
-                        this.pubDate = pubDate;
-                    }
+                        if (!isNaN(pubDate)) {
+                            this.pubDate = pubDate;
+                        }
 
-                    this.siteUrl = feed.link || url; 
-                    this.feedUrl = feed.feedUrl || url; 
+                        this.siteUrl = feed.link || url;
+                        this.feedUrl = feed.feedUrl || url;
 
-                    if (this.siteUrl.indexOf("http") == -1) {
-                        this.siteUrl = url.split("/").slice(0,2).join("/") + this.siteUrl;
-                    }
+                        if (this.siteUrl.indexOf("http") == -1) {
+                            this.siteUrl = url.split("/").slice(0, 2).join("/") + this.siteUrl;
+                        }
 
-                    if (this.feedUrl.indexOf("http") == -1) {
-                        this.feedUrl = url;
-                    }
+                        if (this.feedUrl.indexOf("http") == -1) {
+                            this.feedUrl = url;
+                        }
 
-                    this.title = feed.title || url;
-                    this.ttl = feed.ttl || 10;
-                    this.errored = false;
+                        this.title = feed.title || url;
+                        this.ttl = feed.ttl || 10;
+                        this.errored = false;
 
-                    db.transaction("rw", db.feeds, db.items, () => {
-                        this.save().then(key => {
-                            feed.items.forEach(i => {
-                                let item = new FeedItem(i, key);
-                                item.save();
+                        db.transaction("rw", db.feeds, db.items, () => {
+                            this.save().then(key => {
+                                feed.items.forEach(i => {
+                                    let item = new FeedItem(i, key);
+                                    item.save();
+                                });
+                                // console.log(`${url} -> ${feed.items.length} items`);
+                                resolve(this);
                             });
-                            console.log(`${url} -> ${feed.items.length} items`);
-                            resolve(this);
                         });
-                    });
-                }
-            });
-            } catch(ferr) {
+                    }
+                });
+            } catch (ferr) {
                 this.errored = true;
                 this.save().then(() => {
                     reject(ferr);
@@ -86,7 +86,7 @@ export class Feed {
         try {
             let f = await db.feeds.where("feedUrl").equals(feedUrl).count();
             return f == 1;
-        } catch(n) {
+        } catch (n) {
             console.error("n", n)
             return false;
         }
@@ -100,7 +100,7 @@ export class Feed {
         try {
             let f = await db.feeds.where("feedUrl").equals(url).first();
             return f;
-        } catch(n) {
+        } catch (n) {
             console.error("n", n)
             return false;
         }
@@ -117,9 +117,16 @@ export class Feed {
         }
     }
 
-    static async refreshAll() {
-        await db.feeds.each(feed => {
-            feed.refresh()
+    static refreshAll() {
+        return new Promise((resolve, reject) => {
+            console.log("refreshing all feeds...");
+            db.feeds.toArray().then(feeds => {
+                let promises = feeds.map(f => {
+                    // console.log(`refresh ${f.siteUrl}`);
+                    return f.refresh();
+                });
+                resolve(promises)
+            })
         })
     }
 
@@ -160,7 +167,7 @@ export class Feed {
         })
     }
 
-    
+
 }
 
 export class FeedItem {

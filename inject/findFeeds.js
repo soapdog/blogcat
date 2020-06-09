@@ -1,20 +1,19 @@
-(function main() {
-    let rssEl = document.querySelector("link[type='application/rss+xml']")
-    let atomEl = document.querySelector("link[type='application/atom+xml']")
-    let ret = {
-        rss: false,
-        atom: false
-    }
+let rssEl = document.querySelector("link[type='application/rss+xml']")
+let atomEl = document.querySelector("link[type='application/atom+xml']")
 
-    console.log(rssEl)
-    console.log(atomEl)
-    if (rssEl) {
-        ret.rss = rssEl.getAttribute("href")
-    }
+let feeds = {
+    rss: false,
+    atom: false
+}
 
-    if (atomEl) {
-        ret.atom = atomEl.getAttribute("href")
-    }
+if (rssEl) {
+    feeds.rss = rssEl.getAttribute("href")
+}
 
-    return ret
-})()
+if (atomEl) {
+    feeds.atom = atomEl.getAttribute("href")
+}
+
+if (feeds.rss || feeds.atom) {
+    browser.runtime.sendMessage({ "type": "found-feeds", feeds })
+}

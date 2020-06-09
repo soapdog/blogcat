@@ -13,7 +13,7 @@ const subscribeView = () => {
     browser.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         const tab = tabs[0]
         browser.tabs.executeScript(tab.id, {
-            file: "/inject/findFeeds.js"
+            file: "/inject/directFindFeeds.js"
         })
             .then(data => {
                 const feeds = data[0]
