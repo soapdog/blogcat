@@ -3,8 +3,8 @@ import { db } from "./database.js";
 export class Feed {
     constructor(feedUrl, folderId) {
         this.feedUrl = feedUrl;
-        this.enabled = true;
-        this.errored = false;
+        this.enabled = 1;
+        this.errored = 0;
         this.title = feedUrl;
         this.folderId = folderId;
         this.items = [];
@@ -13,14 +13,15 @@ export class Feed {
     refresh() {
         return new Promise((resolve, reject) => {
             let url = this.feedUrl;
-            // console.log(`refreshing ${url}`);
+            console.log(`refreshing ${url}`);
             let parser = new RSSParser();
             try {
                 parser.parseURL(this.feedUrl, (err, feed) => {
                     if (err) {
-                        this.refreshing = false;
-                        this.errored = true;
+                        this.refreshing = 0;
+                        this.errored = 1;
                         this.save().then(() => {
+                            console.log("internal to rss-parser", err.toString())
                             reject(err);
                         });
                     } else {
@@ -55,7 +56,7 @@ export class Feed {
 
                         this.title = feed.title || url;
                         this.ttl = feed.ttl || 10;
-                        this.errored = false;
+                        this.errored = 0;
 
                         db.transaction("rw", db.feeds, db.items, () => {
                             this.save().then(key => {
@@ -70,7 +71,8 @@ export class Feed {
                     }
                 });
             } catch (ferr) {
-                this.errored = true;
+                console.log(`errored ${this.feedUrl}`, feer)
+                this.errored = 1;
                 this.save().then(() => {
                     reject(ferr);
                 });
@@ -120,7 +122,7 @@ export class Feed {
     static refreshAll() {
         return new Promise((resolve, reject) => {
             console.log("refreshing all feeds...");
-            db.feeds.toArray().then(feeds => {
+            db.feeds.where({errored: 0}).toArray().then(feeds => {
                 let promises = feeds.map(f => {
                     // console.log(`refresh ${f.siteUrl}`);
                     return f.refresh();

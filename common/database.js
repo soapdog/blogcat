@@ -7,7 +7,7 @@ export async function initialize() {
 	db = new Dexie("blogcat"); // Dexie comes from HTML <script> tag.
 
 	db.version(1).stores({
-		feeds: "++id, &feedUrl, title, pubDate, lastBuildDate, siteUrl, *tags",
+		feeds: "++id, &feedUrl, title, pubDate, lastBuildDate, siteUrl, errored, *tags",
 		items: "++id, guid, feedId, read, creator, pubDate, title, *tags",
 		tags: "++id, &name",
 	});
