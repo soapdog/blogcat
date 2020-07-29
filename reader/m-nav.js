@@ -17,7 +17,7 @@ const mNav = (initialVnode) => {
 
     return {
         view: (vnode) => {
-            return m("header.navbar", [
+            return m("header.navbar", {style: "margin-top: 10px"}, [
                 m("section.navbar-section", [
                     m("a.navbar-brand.mr-2", m("img", { src: "../assets/icons/cat_color.svg", style: "height: 20px" })),
                     m(m.route.Link, { class: "btn btn-link", href: "/unread" }, "Unread"),

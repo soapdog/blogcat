@@ -6,8 +6,6 @@ export class Feed {
         this.enabled = 1;
         this.errored = 0;
         this.title = feedUrl;
-        this.folderId = folderId;
-        this.items = [];
     }
 
     refresh() {
@@ -59,10 +57,10 @@ export class Feed {
                         this.errored = 0;
 
                         db.transaction("rw", db.feeds, db.items, () => {
-                            this.save().then(key => {
-                                feed.items.forEach(i => {
-                                    let item = new FeedItem(i, key);
-                                    item.save();
+                            this.save().then(feedId => {
+                                feed.items.forEach(item => {
+                                    // TODO: bug: saves duplicate items.
+                                   FeedItem.insertOrReplace(item, feedId);
                                 });
                                 // console.log(`${url} -> ${feed.items.length} items`);
                                 resolve(this);
@@ -173,7 +171,7 @@ export class Feed {
 }
 
 export class FeedItem {
-    constructor(pItem, key) {
+    constructor(pItem, feedId) {
         this.author = pItem.author || "";
         this.content = pItem.content || "";
         this.contentSnippet = pItem.contentSnippet || "";
@@ -189,10 +187,11 @@ export class FeedItem {
         if (pubDate && !isNaN(pubDate)) {
             this.pubDate = pubDate;
         }
+        // bug: double check if link is not relative.
         this.link = pItem.link || "";
         this.title = pItem.title || "";
         this.tags = [];
-        this.feedId = key;
+        this.feedId = feedId;
     }
 
     save() {
@@ -201,6 +200,13 @@ export class FeedItem {
 
     static getById(id) {
         return db.items.get(id);
+    }
+
+    static insertOrReplace(item, feedId) {
+        // TODO:
+        // check if already exists.
+        // check if it is the same.
+        // update or insert
     }
 }
 

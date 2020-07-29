@@ -1,6 +1,6 @@
-document.getElementById('debug').addEventListener("click", () => {
+document.getElementById('import').addEventListener("click", () => {
     browser.tabs.create({
-        url: "/debug/index.html"
+        url: "/import/index.html"
       });
       window.close();
 })

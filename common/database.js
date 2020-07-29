@@ -8,7 +8,7 @@ export async function initialize() {
 
 	db.version(1).stores({
 		feeds: "++id, &feedUrl, title, pubDate, lastBuildDate, siteUrl, errored, *tags",
-		items: "++id, guid, feedId, read, creator, pubDate, title, *tags",
+		items: "++id, guid, link, feedId, read, creator, pubDate, title, *tags",
 		tags: "++id, &name",
 	});
 

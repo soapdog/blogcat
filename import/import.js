@@ -17,25 +17,30 @@ const vImport = () => {
         feeds.forEach(fp => {
             let url = fp.value.feedUrl
             fp.value.subscribeStatus = "loading"
-            Feed.subscribe(url)
-                .then(f => {
-                    console.log("saved feed", f)
-                    fp.value.subscribeStatus = "subscribed"
-                    error = false
-                    m.redraw()
-                })
-                .catch(err => {
-                    console.log(err)
-                    if (err.feed) {
+            if (fp.value.checked) {
+                Feed.subscribe(url)
+                    .then(f => {
+                        console.log("saved feed", f)
                         fp.value.subscribeStatus = "subscribed"
                         error = false
-                    } else {
-                        fp.value.subscribeStatus = "error"
-                        error = err.message
-                        console.error("error subscribing", err)
-                    }
-                    m.redraw()
-                })
+                        m.redraw()
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        if (err.feed) {
+                            fp.value.subscribeStatus = "subscribed"
+                            error = false
+                        } else {
+                            fp.value.subscribeStatus = "error"
+                            error = err.message
+                            console.error("error subscribing", err)
+                        }
+                        m.redraw()
+                    })
+            } else {
+                fp.value.subscribeStatus = "ignored"
+                m.redraw()
+            }
         })
     }
 
@@ -82,6 +87,11 @@ const vImport = () => {
         m.redraw()
     }
 
+    const showFeed = async (url) => {
+        let xml = (await (await fetch(url)).body())
+        console.log(xml)
+    }
+
     return {
         view: vnode => {
             switch (stage) {
@@ -112,6 +122,8 @@ const vImport = () => {
                                 return m("i.fas.fa-check.m-2")
                             case "error":
                                 return m("i.fas.fa-exclamation-triangle.m-2")
+                            case "ignored":
+                                return m("")
 
                         }
                     }
@@ -120,7 +132,7 @@ const vImport = () => {
                             let feed = fp.value
                             return m("tr", [
                                 m("td", m("span", feed.title)),
-                                feed.description ? m("td", [m("span", feed.description), m("a.btn.btn-link.ml-2", { href: feed.link }, "link")]) : m("td", m("a.btn.btn-link.ml-2", { href: feed.link }, "link")),
+                                feed.description ? m("td", [m("span", feed.description), m("a.btn.btn-link.ml-2", { href: feed.link }, "link"), m("a.btn.btn-link.ml-2", { onClick: () => showFeed(feed.feedUrl) }, "feed")]) : m("td", m("a.btn.btn-link.ml-2", { href: feed.link }, "link")),
                                 m("td", status(fp))
                             ])
                         }
